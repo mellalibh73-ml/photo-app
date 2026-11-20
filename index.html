@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo App</title>
+<style>
+body{font-family:sans-serif;background:#111;color:#fff;text-align:center;padding:20px}
+h1{color:#ffcc00}
+button,select{padding:12px 18px;margin:8px;border:none;border-radius:10px;font-size:16px}
+button{background:#ffcc00;font-weight:bold}
+canvas{max-width:100%;border-radius:15px;margin-top:15px;background:#222}
+input{margin:10px}
+</style>
+</head>
+<body>
+<h1>📸 Photo App ديالي</h1>
+<p>صور ولا ختار تصويرة و دير ليها فلتر</p>
+<input type="file" id="upload" accept="image/*"><br>
+<input type="file" id="camera" accept="image/*" capture="camera"><br>
+<select id="filter">
+<option value="none">بدون فلتر</option>
+<option value="grayscale(100%)">أبيض و أسود</option>
+<option value="sepia(100%)">قديم Sepia</option>
+<option value="contrast(150%) saturate(150%)">واضح</option>
+<option value="blur(2px)">ضبابي</option>
+<option value="invert(100%)">معكوس</option>
+</select><br>
+<button onclick="download()">💾 حفظ التصويرة</button>
+<br><canvas id="canvas"></canvas>
+<script>
+let img=new Image();
+let canvas=document.getElementById('canvas');
+let ctx=canvas.getContext('2d');
+function load(e){
+let r=new FileReader();
+r.onload=function(ev){img.onload=function(){canvas.width=img.width;canvas.height=img.height;draw()};img.src=ev.target.result}
+r.readAsDataURL(e.target.files[0]);
+}
+document.getElementById('upload').onchange=load;
+document.getElementById('camera').onchange=load;
+document.getElementById('filter').onchange=draw;
+function draw(){
+if(!img.src) return;
+ctx.filter=document.getElementById('filter').value;
+ctx.drawImage(img,0,0);
+}
+function download(){
+if(!img.src){alert('ختار تصويرة بعدا');return}
+let a=document.createElement('a');
+a.download='photo-app.png';
+a.href=canvas.toDataURL();
+a.click();
+}
+</script>
+</body>
+</html>
